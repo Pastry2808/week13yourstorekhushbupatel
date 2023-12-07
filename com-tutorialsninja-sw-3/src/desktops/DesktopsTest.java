@@ -10,6 +10,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DesktopsTest extends BaseTest {
     String baseUrl = "http://tutorialsninja.com/demo/index.php?";
     @Before
@@ -28,10 +31,27 @@ public class DesktopsTest extends BaseTest {
 //        1.3 Select Sort By position "Name: Z to A"
         WebElement dropDown =driver.findElement(By.id("input-sort"));
         Select select = new Select(dropDown);
-        select.selectByIndex(2); // select by index
+        select.selectByVisibleText("Name (Z - A)");
 //        1.4 Verify the Product will arrange in Descending order.
-        WebElement dropDown1 =driver.findElement(By.id("input-sort"));
-        Assert.assertTrue(dropDown1.isDisplayed());
+        List<WebElement> productElements = driver.findElements(By.xpath("//div[@id=\"content\"]/div[4]/div"));
+        // Extract product names and store them in a list
+        List<String> productNames = new ArrayList<>();
+        for (WebElement productElement : productElements) {
+            productNames.add(productElement.getText());
+        }
+//        Check if product names are in alphabetical order
+        boolean isAlphabeticalOrder = true;
+        for (int i = 1; i < productNames.size(); i++) {
+            if (productNames.get(i - 1).compareToIgnoreCase(productNames.get(i)) > 0) {
+                isAlphabeticalOrder = false;
+                break;
+            }
+        }
+        if (isAlphabeticalOrder) {
+            System.out.println("Products are arranged in alphabetical order A-Z. ");
+        } else {
+            System.out.println("Products are arranged in alphabetical order Z-A.");
+        }
     }
     @Test
     public void verifyProductAddedToShoppingCartSuccessFully() throws InterruptedException {
@@ -104,6 +124,6 @@ public class DesktopsTest extends BaseTest {
 
     @After
     public void endTest(){
-        //closeBrowser();
+        closeBrowser();
     }
 }

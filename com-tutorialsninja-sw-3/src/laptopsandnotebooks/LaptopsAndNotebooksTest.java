@@ -162,6 +162,6 @@ public class LaptopsAndNotebooksTest extends BaseTest {
 
     @After
     public void endTest() {
-        //closeBrowser();
+        closeBrowser();
     }
 }
